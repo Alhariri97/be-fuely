@@ -40,7 +40,6 @@ import json
 def fetch_petrol_stations(user: User):
     lat = user.lat
     lon = user.lon
-    print(lat, lon, "<<<<<<<<<<<<<<<<<, from main")
     response =  get_petrol_stations(lat, lon)
     res = json.dumps(response)
     return {"allStations":res, "lon": lon, "lat": lat}
