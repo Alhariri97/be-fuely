@@ -36,6 +36,7 @@ def read_root():
 
 import json
 
+# new
 @app.post("/petrol" ,response_model=User ) 
 def fetch_petrol_stations(user: User):
     lat = user.lat
