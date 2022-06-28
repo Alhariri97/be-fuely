@@ -13,7 +13,7 @@ start = time.perf_counter()
 from database import(
     get_petrol_stations
 )
-
+#ChIJA-l0qwu7cEgRCYbHFKiqC8A
 
 app = FastAPI()
 
@@ -37,10 +37,10 @@ import json
 
 # new
 @app.post("/petrol" ,response_model=User ) 
-def fetch_petrol_stations(user: User):
+async def fetch_petrol_stations(user: User):
     lat = user.lat
     lon = user.lon
-    response =  get_petrol_stations(lat, lon)
+    response =  await get_petrol_stations(lat, lon)
     res = json.dumps(response)
     return {"allStations":res, "lon": lon, "lat": lat}
 
