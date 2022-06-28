@@ -1,8 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from model import User
-import googlemaps
-gmaps = googlemaps.Client(key = "AIzaSyCEqKeNPOucSSpZ9MLnchQV-CsvZueN4bQ")
+
 # For the thread function
 
 import time
@@ -44,4 +43,11 @@ def fetch_petrol_stations(user: User):
     response =  get_petrol_stations(lat, lon)
     res = json.dumps(response)
     return {"allStations":res, "lon": lon, "lat": lat}
+
+
+
+
+
+
+
 
