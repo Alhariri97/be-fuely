@@ -10,3 +10,4 @@ class User(BaseModel):
     # radius: int
     allStations: Optional[str]
 
+
