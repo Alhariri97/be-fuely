@@ -15,8 +15,8 @@ def get_petrol_stations(lat, lon):
     arr = list
     obj = dict
 
-    for station in result["results"]:
-        obj["name"] = station["name"]
+    #for station in result["results"]:
+        #obj["name"] = station["name"]
         #print(station["name"])
     print(obj)
     return result["results"]
