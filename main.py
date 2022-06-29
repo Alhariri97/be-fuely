@@ -3,10 +3,10 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from model import (User, Price, ReturnPrice)
 
-from database import(
-    get_petrol_stations,
-    change_price,
-)
+# from database import(
+#     get_petrol_stations,
+#     change_price,
+# )
 
 
 app = FastAPI()
@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/api")
+@app.get("/")
 def read_root():
     return {"hello":"Geo"}
 
