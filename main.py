@@ -1,17 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from model import User
+from model import (User)
 
 # For the thread function
 
-import time
-import threading
-
-start = time.perf_counter()
 # End of importing of the thread function
 
 from database import(
-    get_petrol_stations
+    get_petrol_stations,
+    # stationsInDataBase
 )
 #ChIJA-l0qwu7cEgRCYbHFKiqC8A
 
@@ -27,26 +24,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-import json
 
 @app.get("/")
 def read_root():
     return {"hello":"Geo"}
 
 import json
-
 # new
 @app.post("/petrol" ,response_model=User ) 
 async def fetch_petrol_stations(user: User):
     lat = user.lat
     lon = user.lon
     response =  await get_petrol_stations(lat, lon)
-    res = json.dumps(response)
-    return {"allStations":res, "lon": lon, "lat": lat}
-
-
-
-
+    print(type(response))
+    return {"allStations":response,  "lon": lon, "lat": lat}
 
 
 

@@ -8,6 +8,6 @@ class User(BaseModel):
     lon: str
     lat: str
     # radius: int
-    allStations: Optional[str]
+    allStations: Optional[list]
 
 

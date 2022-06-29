@@ -22,8 +22,6 @@ async def get_petrol_stations(lat, lon):
     newFromGoogle = []
     result = gmaps.places( location=(f"{lat}, {lon}"), radius=2, type="gas_station")
     i=0
-    # print(type(result))
-    # return result
     while i < len(result["results"]):
         newFromGoogle.append({ "name" : result["results"][i]["name"], "station_id" : result["results"][i]["place_id"], "address" : result["results"][i]["formatted_address"], "coordinates" : {"lat" : result["results"][i]["geometry"]["location"]["lat"], "lng" : result["results"][i]["geometry"]["location"]["lng"]}, "price" : 0, "votes" : 0 })
         allTheStaionsId.append(result["results"][i]["place_id"])
@@ -34,20 +32,14 @@ async def get_petrol_stations(lat, lon):
         document = await collection.find_one({"station_id" : newFromGoogle[j]["station_id"]})
         if document == None:
             newStationToDataBase = await collection.insert_one(newFromGoogle[j])
-        # else:
-        #     print( "It's already in your database")
         j += 1
-#####################
-    d = 0 
+        d = 0 
     staionsFromDataBase = []
     while d < len(allTheStaionsId):
         document = await collection.find_one({"station_id" : allTheStaionsId[d]})
         staionsFromDataBase.append(document)
         d +=1
-    print(type(staionsFromDataBase))
-
+    for i in range(len(staionsFromDataBase)):
+        del staionsFromDataBase[i]["_id"]
     return(staionsFromDataBase)
-    # print(type())
-    # print(type(staionsFromDataBase))
-    # return staionsFromDsataBase
-    # return {"staions":{"d":staionsFromDataBase}, "lon":"any", "lat": "any", "user": "jj"}
+
