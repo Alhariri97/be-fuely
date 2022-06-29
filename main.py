@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/api/")
+@app.get("/api")
 def read_root():
     return {"hello":"Geo"}
 
