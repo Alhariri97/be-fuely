@@ -3,6 +3,7 @@ import os
 load_dotenv()
 apiKey = os.getenv("googleAPIKey")
 DBconnection =  os.getenv("PersonalDBConnection") or os.getenv("MONGODB_URL") 
+print(DBconnection, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<,,,")
 import googlemaps
 gmaps = googlemaps.Client(key = apiKey)
 
