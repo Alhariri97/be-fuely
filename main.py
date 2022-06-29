@@ -22,19 +22,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/api/")
 def read_root():
     return {"hello":"Geo"}
 
 # new
-@app.post("/stations" ,response_model=User ) 
+@app.post("/api/stations" ,response_model=User ) 
 async def fetch_petrol_stations(user: User):
     lat = user.lat
     lng = user.lng
     response =  await get_petrol_stations(lat, lng)
     return {"allStations":response,  "lng": lng, "lat": lat}
 
-@app.put("/stations/price", response_model=ReturnPrice)
+@app.put("/api/stations/price", response_model=ReturnPrice)
 async def update_price(price: Price):
     
     response = await change_price(price)
@@ -43,3 +43,6 @@ async def update_price(price: Price):
     return {"updated_station": response}
 
 #
+@app.get("/api/*")
+def read_root():
+    return {"hello":"error"}
