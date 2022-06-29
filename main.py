@@ -24,6 +24,10 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
+    return {"hello":"Tea(m)418", "I'm_I_In_The_Right_Place":"Yes you are, send a lovely request to 'https://fuely.herokuapp.com/api' to get all the avalible end points that team (Tea(m)418) provides! "}
+
+@app.get("/api")
+def read_root():
     return {"hello":"Geo"}
 
 # new
@@ -34,14 +38,14 @@ async def fetch_petrol_stations(user: User):
     response =  await get_petrol_stations(lat, lng)
     return {"allStations":response,  "lng": lng, "lat": lat}
 
-# @app.put("/api/stations/price", response_model=ReturnPrice)
-# async def update_price(price: Price):
+@app.put("/api/price", response_model=ReturnPrice)
+async def update_price(price: Price):
     
-#     response = await change_price(price)
+    response = await change_price(price)
     
-#     return {"updated_station": response}
+    return {"updated_station": response}
 
-# #
-# @app.get("/api/*")
-# def read_root():
-#     return {"hello":"error"}
+#
+@app.get("/api/*")
+def read_root():
+    return {"hello":"error"}
