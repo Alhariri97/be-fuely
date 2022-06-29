@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
-load_dotenv()
 import os
+load_dotenv()
 apiKey = os.getenv("googleAPIKey")
 DBconnection =  os.getenv("PersonalDBConnection") or os.getenv("DBconnection") 
 print(DBconnection)

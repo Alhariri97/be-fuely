@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from model import (User, Price, ReturnPrice)
 
@@ -25,7 +26,6 @@ app.add_middleware(
 def read_root():
     return {"hello":"Geo"}
 
-import json
 # new
 @app.post("/stations" ,response_model=User ) 
 async def fetch_petrol_stations(user: User):
