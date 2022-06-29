@@ -3,7 +3,6 @@ import os
 load_dotenv()
 apiKey = os.getenv("googleAPIKey")
 DBconnection =  os.getenv("PersonalDBConnection") or os.getenv("DBconnection") 
-print(DBconnection)
 import googlemaps
 gmaps = googlemaps.Client(key = apiKey)
 
@@ -15,8 +14,6 @@ database=client.petrol
 collection = database.stations
 prices = database.prices
 from model import User
-import json
-
 
 async def get_petrol_stations(lat, lng):
     allTheStationsId = []
@@ -62,7 +59,7 @@ async def change_price(price):
     {"$push" : { "price" : {"user_price" : petrol_price, "time_submitted": dt_string, "user" : user} } })
 
     updated_station = await collection.find_one({"station_id" : station_id})
-    
+    del updated_station["_id"]
     return updated_station
 
 #

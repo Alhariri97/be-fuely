@@ -38,8 +38,7 @@ async def fetch_petrol_stations(user: User):
 async def update_price(price: Price):
     
     response = await change_price(price)
-   
-    del response["_id"]
+    
     return {"updated_station": response}
 
 #
