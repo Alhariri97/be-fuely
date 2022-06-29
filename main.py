@@ -1,16 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from model import (User)
-
-# For the thread function
-
-# End of importing of the thread function
+from model import (User, Price, ReturnPrice)
 
 from database import(
     get_petrol_stations,
-    # stationsInDataBase
+    change_price,
 )
-#ChIJA-l0qwu7cEgRCYbHFKiqC8A
+
 
 app = FastAPI()
 
@@ -31,14 +27,19 @@ def read_root():
 
 import json
 # new
-@app.post("/petrol" ,response_model=User ) 
+@app.post("/stations" ,response_model=User ) 
 async def fetch_petrol_stations(user: User):
     lat = user.lat
-    lon = user.lon
-    response =  await get_petrol_stations(lat, lon)
-    print(type(response))
-    return {"allStations":response,  "lon": lon, "lat": lat}
+    lng = user.lng
+    response =  await get_petrol_stations(lat, lng)
+    return {"allStations":response,  "lng": lng, "lat": lat}
 
+@app.put("/stations/price", response_model=ReturnPrice)
+async def update_price(price: Price):
+    
+    response = await change_price(price)
+   
+    del response["_id"]
+    return {"updated_station": response}
 
-
-
+#
