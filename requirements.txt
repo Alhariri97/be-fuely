@@ -3,4 +3,4 @@ uvicorn == 0.18.1
 motor == 3.0.0.0
 googlemaps == 4.6.0
 dnspython == 2.2.1
-dotenv == 0.20.0
+dotenv
