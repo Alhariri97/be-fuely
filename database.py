@@ -2,11 +2,13 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 apiKey = os.getenv("googleAPIKey")
-DBconnection = os.getenv("DBconnection")
+DBconnection =  os.getenv("PersonalDBConnection") or os.getenv("DBconnection") 
+print(DBconnection)
 import googlemaps
 gmaps = googlemaps.Client(key = apiKey)
 
 import motor.motor_asyncio
+
 client = motor.motor_asyncio.AsyncIOMotorClient(DBconnection)
 
 database=client.petrol
