@@ -5,7 +5,7 @@ from model import (User, Price, ReturnPrice)
 
 from database import(
     get_petrol_stations,
-    # change_price,
+    change_price,
 )
 
 
@@ -45,7 +45,8 @@ async def update_price(price: Price):
     
     return {"updated_station": response}
 
-#
+
 @app.get("/api/*")
 def read_root():
     return {"hello":"error"}
+
