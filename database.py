@@ -24,32 +24,25 @@ from model import User
 import random
 def random_price():
     return (random.randrange(190,210,1) + 0.9)
+import numpy as np
 
 def giveDate():
     now = datetime.now()
     return now.strftime("%d/%m/%Y %H:%M:%S")
-
 async def get_petrol_stations(lat, lng):
     twoPageResult = []
     allTheStationsId = []
     newFromGoogle = []
     result =   gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station")
-    twoPageResult.append(result)
+    twoPageResult.append(result["results"])
     sleep(2)
-
     nextPage =  gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station", page_token = result["next_page_token"])
-    twoPageResult.append(nextPage)
-   
-      
-
-
-
-
+    twoPageResult.append(nextPage["results"])
+    flattenList =  list(np.concatenate(twoPageResult).flat)
     i=0
-    while i < len(twoPageResult):
-      
-        newFromGoogle.append({ "name" : result["results"][i]["name"], "station_id" : result["results"][i]["place_id"], "address" : result["results"][i]["formatted_address"], "coordinates" : {"lat" : result["results"][i]["geometry"]["location"]["lat"], "lng" : result["results"][i]["geometry"]["location"]["lng"]}, "price" : [{ "time_submitted": giveDate(), "price": random_price(),"user":"default"}], "votes" : 0 })
-        allTheStationsId.append(result["results"][i]["place_id"])
+    while i < len(flattenList):
+        newFromGoogle.append({ "name" : flattenList[i]["name"], "station_id" : flattenList[i]["place_id"], "address" : flattenList[i]["formatted_address"], "coordinates" : {"lat" : flattenList[i]["geometry"]["location"]["lat"], "lng" : flattenList[i]["geometry"]["location"]["lng"]}, "price" : [{ "time_submitted": giveDate(), "price": random_price(),"user":"default"}], "votes" : 0 })
+        allTheStationsId.append(flattenList[i]["place_id"])
         i += 1
 #####################
     j= 0
@@ -58,7 +51,7 @@ async def get_petrol_stations(lat, lng):
         if document == None:
             newStationToDataBase = await collection.insert_one(newFromGoogle[j])
         j += 1
-        d = 0 
+    d = 0 
     stationsFromDataBase = []
     while d < len(allTheStationsId):
         document = await collection.find_one({"station_id" : allTheStationsId[d]})
@@ -67,6 +60,7 @@ async def get_petrol_stations(lat, lng):
  
     for i in range(len(stationsFromDataBase)):
         del stationsFromDataBase[i]["_id"]
+    print(len(stationsFromDataBase))
     return(stationsFromDataBase)
 
 
