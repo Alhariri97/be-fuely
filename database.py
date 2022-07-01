@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+from time import sleep
 load_dotenv()
 apiKey = os.getenv("googleAPIKey")
 DBconnection =  os.getenv("PersonalDBConnection") or os.getenv("MONGODB_URL") 
@@ -12,7 +13,7 @@ import motor.motor_asyncio
 client = motor.motor_asyncio.AsyncIOMotorClient(DBconnection)
 
 
-# give me a function that will return a random decimal number between 100 and 300   
+
 
 
 database=client.petrol
@@ -29,11 +30,23 @@ def giveDate():
     return now.strftime("%d/%m/%Y %H:%M:%S")
 
 async def get_petrol_stations(lat, lng):
+    twoPageResult = []
     allTheStationsId = []
     newFromGoogle = []
-    result = gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station")
+    result =   gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station")
+    twoPageResult.append(result)
+    sleep(2)
+
+    nextPage =  gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station", page_token = result["next_page_token"])
+    twoPageResult.append(nextPage)
+   
+      
+
+
+
+
     i=0
-    while i < len(result["results"]):
+    while i < len(twoPageResult):
       
         newFromGoogle.append({ "name" : result["results"][i]["name"], "station_id" : result["results"][i]["place_id"], "address" : result["results"][i]["formatted_address"], "coordinates" : {"lat" : result["results"][i]["geometry"]["location"]["lat"], "lng" : result["results"][i]["geometry"]["location"]["lng"]}, "price" : [{ "time_submitted": giveDate(), "price": random_price(),"user":"default"}], "votes" : 0 })
         allTheStationsId.append(result["results"][i]["place_id"])
@@ -51,10 +64,9 @@ async def get_petrol_stations(lat, lng):
         document = await collection.find_one({"station_id" : allTheStationsId[d]})
         stationsFromDataBase.append(document)
         d +=1
-    print(stationsFromDataBase[0])
+ 
     for i in range(len(stationsFromDataBase)):
         del stationsFromDataBase[i]["_id"]
-    print(stationsFromDataBase[0])
     return(stationsFromDataBase)
 
 
@@ -80,6 +92,7 @@ async def change_price(price):
     updated_station = await collection.find_one({"station_id" : station_id})
     del updated_station["_id"]
     return updated_station
+
 
 
 
