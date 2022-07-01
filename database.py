@@ -20,11 +20,13 @@ collection = database.stations
 prices = database.prices
 from model import User
 
-from random import random
+import random
 def random_price():
-    return round(100 + (random() * 100), 1)
+    return (random.randrange(190,210,1) + 0.9)
 
-
+def giveDate():
+    now = datetime.now()
+    return now.strftime("%d/%m/%Y %H:%M:%S")
 
 async def get_petrol_stations(lat, lng):
     allTheStationsId = []
@@ -33,7 +35,7 @@ async def get_petrol_stations(lat, lng):
     i=0
     while i < len(result["results"]):
       
-        newFromGoogle.append({ "name" : result["results"][i]["name"], "station_id" : result["results"][i]["place_id"], "address" : result["results"][i]["formatted_address"], "coordinates" : {"lat" : result["results"][i]["geometry"]["location"]["lat"], "lng" : result["results"][i]["geometry"]["location"]["lng"]}, "price" : [{ "station_id" : result["results"][i]["place_id"],"price": random_price(),"user":"default"}], "votes" : 0 })
+        newFromGoogle.append({ "name" : result["results"][i]["name"], "station_id" : result["results"][i]["place_id"], "address" : result["results"][i]["formatted_address"], "coordinates" : {"lat" : result["results"][i]["geometry"]["location"]["lat"], "lng" : result["results"][i]["geometry"]["location"]["lng"]}, "price" : [{ "time_submitted": giveDate(), "price": random_price(),"user":"default"}], "votes" : 0 })
         allTheStationsId.append(result["results"][i]["place_id"])
         i += 1
 #####################
@@ -69,14 +71,11 @@ async def change_price(price):
     petrol_price = price.price
     user = price.user
 
-    def giveDate():
-        now = datetime.now()
-        return now.strftime("%d/%m/%Y %H:%M:%S")
 
 
     await collection.update_one({"station_id" : station_id},
     
-    {"$push" : { "price" : {"user_price" : petrol_price, "time_submitted": giveDate(), "user" : user} } })
+    {"$push" : { "price" : {"price" : petrol_price, "time_submitted": giveDate(), "user" : user} } })
 
     updated_station = await collection.find_one({"station_id" : station_id})
     del updated_station["_id"]
