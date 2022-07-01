@@ -24,7 +24,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"hello":"Tea(m)418", "I'm_I_In_The_Right_Place":"Yes you are, send a lovely request to 'https://fuely.herokuapp.com/api' to get all the avalible end points that team (Tea(m)418) provides! "}
+    return {"hello":"Tea(m)418", "Am_I_In_The_Right_Place":"Yes you are, send a lovely request to 'https://fuely.herokuapp.com/api' to get all the avalible end points that team (Tea(m)418) provides! "}
 
 @app.get("/api")
 def read_root():
@@ -48,5 +48,5 @@ async def update_price(price: Price):
 
 @app.get("/api/*")
 def read_root():
-    return {"hello":"error"}
+    return {"Error":"No path!"}
 
