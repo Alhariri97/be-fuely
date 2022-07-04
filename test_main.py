@@ -25,7 +25,7 @@ data= {
   ]
 }
 
-def test_post_staions():
+def test_post_stations():
 
     response = client.post("/api/stations", json=data)
     assert response.status_code == 200
@@ -53,4 +53,28 @@ def test_post_staions():
         assert type(response.json()["allStations"][i]["price"]) == list
         assert type(response.json()["allStations"][i]["votes"]) == int
 
+# def test_put_station():
+
+#     priceData = {  "station_id": "ChIJ7ZAuax4heUgRrhEVajHbwuY",
+#     "user": "andy",
+#     "price": 199.9}
+
+    # response = client.put("/api/price", json=priceData)
+    # print(response)
+    # assert response.status_code == 200
+    # assert type(response.json() )==dict
+    # # assert type(response.json()["updated_station"]) == dict
+    # # assert type(response.json()["updated_station"]) == str
+    # # assert type(response.json()["updated_station"]["name"]) == str
+    # # assert type(response.json()["updated_station"]["station_id"]) == str
+    # # assert type(response.json()["updated_station"]["address"]) == str
+    # # assert type(response.json()["updated_station"]["coordinates"]) == dict
+    # # assert type(response.json()["updated_station"]["coordinates"]["lat"]) == float
+    # # assert type(response.json()["updated_station"]["coordinates"]["lng"]) == float
+    # # assert type(response.json()["updated_station"]["price"]) == list
+    # # for i in range(len(response.json()["updated_station"]["price"])):
+    # #   assert list(response.json()["updated_station"]["price"][i].keys()) ==  ["time_submitted", "price", "user"]
+    # #   assert type(response.json()["updated_station"]["price"][i]["time_submitted"]) == str
+    # #   assert type(response.json()["updated_station"]["price"][i]["price"]) == float
+    # #   assert type(response.json()["updated_station"]["price"][i]["user"]) == str
 
