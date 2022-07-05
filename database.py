@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import logging
 from time import sleep
 load_dotenv()
 apiKey = os.getenv("googleAPIKey")
@@ -11,10 +12,6 @@ gmaps = googlemaps.Client(key = apiKey)
 import motor.motor_asyncio
 
 client = motor.motor_asyncio.AsyncIOMotorClient(DBconnection)
-
-
-
-
 
 database=client.petrol
 collection = database.stations
@@ -29,14 +26,17 @@ import numpy as np
 def giveDate():
     now = datetime.now()
     return now.strftime("%d/%m/%Y %H:%M:%S")
+
+
 async def get_petrol_stations(lat, lng):
     twoPageResult = []
     allTheStationsId = []
     newFromGoogle = []
-    result =   gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station")
+    result = gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station")
     twoPageResult.append(result["results"])
+    logging.warning(result)
     sleep(2)
-    nextPage =  gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station", page_token = result["next_page_token"])
+    nextPage = gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station", page_token = result["next_page_token"])
     twoPageResult.append(nextPage["results"])
     flattenList =  list(np.concatenate(twoPageResult).flat)
     i=0
@@ -44,7 +44,7 @@ async def get_petrol_stations(lat, lng):
         newFromGoogle.append({ "name" : flattenList[i]["name"], "station_id" : flattenList[i]["place_id"], "address" : flattenList[i]["formatted_address"], "coordinates" : {"lat" : flattenList[i]["geometry"]["location"]["lat"], "lng" : flattenList[i]["geometry"]["location"]["lng"]}, "price" : [{"price": random_price(), "time_submitted": giveDate(),"user":"default"}], "votes" : 0 })
         allTheStationsId.append(flattenList[i]["place_id"])
         i += 1
-#####################
+
     j= 0
     while j < len(newFromGoogle):
         document = await collection.find_one({"station_id" : newFromGoogle[j]["station_id"]})
@@ -60,7 +60,6 @@ async def get_petrol_stations(lat, lng):
  
     for i in range(len(stationsFromDataBase)):
         del stationsFromDataBase[i]["_id"]
-    print(len(stationsFromDataBase))
     return(stationsFromDataBase)
 
 

@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from model import (User, Price, ReturnPrice)
+import logging
 
 from database import(
     get_petrol_stations,
@@ -30,15 +31,22 @@ def read_root():
 def read_root():
     return {"hello":"Geo"}
 
-# new
+app.get("/*")
+def read_root():
+    raise HTTPException(status_code=404, detail="Not found")
+
 @app.post("/api/stations" ,response_model=User ) 
 async def fetch_petrol_stations(user: User):
     lat = user.lat
     lng = user.lng
     response =  await get_petrol_stations(lat, lng)
-    if response:
+    logging.warning(response)
+    if len(response) >0:
+       
         return {"allStations":response,  "lng": lng, "lat": lat}
-    raise HTTPException(status_code=404, detail="Not found")
+    else:    
+        raise HTTPException(status_code=404, detail="No stations found")
+
 
 @app.put("/api/price", response_model=ReturnPrice)
 async def update_price(price: Price):
