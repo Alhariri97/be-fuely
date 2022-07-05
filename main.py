@@ -36,7 +36,9 @@ async def fetch_petrol_stations(user: User):
     lat = user.lat
     lng = user.lng
     response =  await get_petrol_stations(lat, lng)
-    return {"allStations":response,  "lng": lng, "lat": lat}
+    if response:
+        return {"allStations":response,  "lng": lng, "lat": lat}
+    raise HTTPException(status_code=404, detail="Not found")
 
 @app.put("/api/price", response_model=ReturnPrice)
 async def update_price(price: Price):

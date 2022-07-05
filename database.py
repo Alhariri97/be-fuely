@@ -41,7 +41,7 @@ async def get_petrol_stations(lat, lng):
     flattenList =  list(np.concatenate(twoPageResult).flat)
     i=0
     while i < len(flattenList):
-        newFromGoogle.append({ "name" : flattenList[i]["name"], "station_id" : flattenList[i]["place_id"], "address" : flattenList[i]["formatted_address"], "coordinates" : {"lat" : flattenList[i]["geometry"]["location"]["lat"], "lng" : flattenList[i]["geometry"]["location"]["lng"]}, "price" : [{ "time_submitted": giveDate(), "price": random_price(),"user":"default"}], "votes" : 0 })
+        newFromGoogle.append({ "name" : flattenList[i]["name"], "station_id" : flattenList[i]["place_id"], "address" : flattenList[i]["formatted_address"], "coordinates" : {"lat" : flattenList[i]["geometry"]["location"]["lat"], "lng" : flattenList[i]["geometry"]["location"]["lng"]}, "price" : [{"price": random_price(), "time_submitted": giveDate(),"user":"default"}], "votes" : 0 })
         allTheStationsId.append(flattenList[i]["place_id"])
         i += 1
 #####################
