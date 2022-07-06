@@ -1,3 +1,4 @@
+from asyncore import read
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from model import (User, Price, ReturnPrice)
@@ -5,6 +6,7 @@ from database import(
     get_petrol_stations,
     change_price,
 )
+from endpoints import endPoints
 
 app = FastAPI()
 
@@ -26,7 +28,7 @@ def read_root():
 
 @app.get("/api")
 def read_root():
-    return {"hello": "Geo"}
+    return endPoints()
 
 
 app.get("/*")
