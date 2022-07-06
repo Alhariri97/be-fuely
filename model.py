@@ -8,15 +8,12 @@ class User(BaseModel):
     lat: str
     allStations: Optional[list]
 
+
 class Price(BaseModel):
     station_id: str
     user: str
     price: float
 
+
 class ReturnPrice(BaseModel):
     updated_station: dict
-
-
-
-
-
