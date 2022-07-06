@@ -1,4 +1,3 @@
-from asyncore import read
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from model import (User, Price, ReturnPrice)
