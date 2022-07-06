@@ -34,18 +34,14 @@ def read_root():
 app.get("/*")
 def read_root():
     raise HTTPException(status_code=404, detail="Not found")
-
-@app.post("/api/stations" ,response_model=User ) 
+# try
+@app.post("/api/stations" ,response_model=User) 
 async def fetch_petrol_stations(user: User):
     lat = user.lat
     lng = user.lng
     response =  await get_petrol_stations(lat, lng)
-    logging.warning(response)
-    if len(response) >0:
-       
-        return {"allStations":response,  "lng": lng, "lat": lat}
-    else:    
-        raise HTTPException(status_code=404, detail="No stations found")
+    return {"allStations":response,  "lng": lng, "lat": lat}
+
 
 
 @app.put("/api/price", response_model=ReturnPrice)

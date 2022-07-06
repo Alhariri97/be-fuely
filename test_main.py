@@ -38,9 +38,6 @@ data= {
   ]
 }
 
-
-
-
 async def test_post_stations():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/api/stations", json = data)
@@ -68,9 +65,24 @@ async def test_post_stations():
         assert type(response.json()["allStations"][i]["coordinates"]) == dict
         assert type(response.json()["allStations"][i]["price"]) == list
         assert type(response.json()["allStations"][i]["votes"]) == int
+
+brokenData= {
+  "user": "string",
+  "lng": "-1.0732336",
+  "lat": "54.banan",
+  "allStations": [
+    "string"
+  ]
+}
+async def test_post_stations_bad_request():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/api/stations", json = brokenData)
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Bad Request" 
+
 badStationData= {
   "user": "string",
-  "lng": "1000000.17403",
+  "lngs": "100.17403",
   "lat": "41.40338",
   "allStations": [
     "string"
@@ -80,14 +92,30 @@ badStationData= {
 async def test_post_stations_with_error():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/api/stations", json = badStationData)
-    assert response.status_code == 200               
+    assert response.status_code == 422
+
+badCoordinates= {
+  "user": "string",
+  "lng": "10000.17403",
+  "lat": "41.40338",
+  "allStations": [
+    "string"
+  ]
+}
+
+async def test_post_stations_with_wrong_coordinate():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/api/stations", json = badCoordinates)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Not found"
 
 
 priceData ={
   "station_id": "ChIJd4YjVxjwfkgRQQY7j_0SJUw",
   "user": "string",
-  "price": 0
+  "price": 190
 }
+
 async def test_put_stations():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.put("/api/price", json = priceData)
@@ -106,3 +134,26 @@ async def test_put_stations():
       assert type(response.json()["updated_station"]["price"][i]["price"]) == float
       assert type(response.json()["updated_station"]["price"][i]["user"]) == str
 
+fakepriceData ={
+  "station_id": "fake_station_id",
+  "user": "string",
+  "price": 186
+}
+
+async def test_put_stations_with_error_id_not_found():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.put("/api/price", json = fakepriceData)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "No stations found"
+
+fakePrice ={
+  "station_id": "ChIJd4YjVxjwfkgRQQY7j_0SJUw",
+  "user": "string",
+  "price": 500
+}
+
+async def test_put_stations_with_error_bad_request():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.put("/api/price", json = fakePrice)
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Bad Request"

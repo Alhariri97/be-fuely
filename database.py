@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
 import os
+from fastapi import  HTTPException
+
 import logging
 from time import sleep
 load_dotenv()
@@ -27,14 +29,25 @@ def giveDate():
     now = datetime.now()
     return now.strftime("%d/%m/%Y %H:%M:%S")
 
+# range from -90 to 90 for latitude and -180 to 180 for longitude.
 
 async def get_petrol_stations(lat, lng):
     twoPageResult = []
     allTheStationsId = []
     newFromGoogle = []
+    
+
+    try :
+        type(float(lat)) == float or type(float(lng)) == float 
+    except :
+        raise HTTPException(status_code=400, detail="Bad Request")
+
+    if float(lat) <= -90 or float(lat) >= 90 or float(lng) <= -180 or float(lng) >= 180 :
+        raise HTTPException(status_code=404, detail="Not found")
+
+
     result = gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station")
     twoPageResult.append(result["results"])
-    logging.warning(result)
     sleep(2)
     nextPage = gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station", page_token = result["next_page_token"])
     twoPageResult.append(nextPage["results"])
@@ -68,22 +81,20 @@ async def get_petrol_stations(lat, lng):
 
 from datetime import datetime
 
-# now = datetime.now()
-# dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-# print(dt_string)
 async def change_price(price):
     station_id = price.station_id
     petrol_price = price.price
     user = price.user
-
-
-
-    await collection.update_one({"station_id" : station_id},
-    
-    {"$push" : { "price" : {"price" : petrol_price, "time_submitted": giveDate(), "user" : user} } })
-
-    updated_station = await collection.find_one({"station_id" : station_id})
-    del updated_station["_id"]
-    return updated_station
+    # logging.warning()
+    if petrol_price <= 180 or petrol_price >= 250:
+        raise HTTPException(status_code=400, detail="Bad Request")
+    checkForExitstsStation = await collection.find_one({"station_id" : station_id})
+    if checkForExitstsStation:
+        await collection.update_one({"station_id" : station_id},{"$push" : { "price" : {"price" : petrol_price, "time_submitted": giveDate(), "user" : user} } })
+        updated_station = await collection.find_one({"station_id" : station_id})
+        del updated_station["_id"]
+        return updated_station
+    else:
+        raise HTTPException(status_code=404, detail="No stations found")
 
 
