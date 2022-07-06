@@ -55,21 +55,19 @@ async def test_post_stations():
         assert list(response.json()["allStations"][i]["coordinates"].keys()) == ["lat", "lng"]
         assert type(response.json()["allStations"][i]["coordinates"]["lat"]) == float
         assert type(response.json()["allStations"][i]["coordinates"]["lng"]) == float
-        # assert len(response.json()["allStations"][i]["price"]) >= 1
-        # assert list(response.json()["allStations"][i]["price"][0].keys()) == ["price","time_submitted", "user"]
-        # for j in range(len(response.json()["allStations"][i]["price"])):
-        #   assert list(response.json()["allStations"][i]["price"][j].keys()) ==  ["price","time_submitted", "user"]
-        #   assert type(response.json()["allStations"][i]["price"][j]["time_submitted"]) == str
-        #   assert type(response.json()["allStations"][i]["price"][j]["price"]) == float
-        #   assert type(response.json()["allStations"][i]["price"][j]["user"]) == str
-        # assert type(response.json()["allStations"][i]["name"]) == str
-        # assert type(response.json()["allStations"][i]["station_id"]) == str
-        # assert type(response.json()["allStations"][i]["address"]) == str
-        # assert type(response.json()["allStations"][i]["coordinates"]) == dict
-        # assert type(response.json()["allStations"][i]["price"]) == list
-        # assert type(response.json()["allStations"][i]["votes"]) == int
-
-
+        assert len(response.json()["allStations"][i]["price"]) >= 1
+        # assert tuple(response.json()["allStations"][i]["price"][0].keys()) == ("price","time_submitted", "user")
+        for j in range(len(response.json()["allStations"][i]["price"])):
+          # assert tuple(response.json()["allStations"][i]["price"][j].keys()) ==  ("price","time_submitted", "user")
+          assert type(response.json()["allStations"][i]["price"][j]["time_submitted"]) == str
+          assert type(response.json()["allStations"][i]["price"][j]["price"]) == float
+          assert type(response.json()["allStations"][i]["price"][j]["user"]) == str
+        assert type(response.json()["allStations"][i]["name"]) == str
+        assert type(response.json()["allStations"][i]["station_id"]) == str
+        assert type(response.json()["allStations"][i]["address"]) == str
+        assert type(response.json()["allStations"][i]["coordinates"]) == dict
+        assert type(response.json()["allStations"][i]["price"]) == list
+        assert type(response.json()["allStations"][i]["votes"]) == int
 badStationData= {
   "user": "string",
   "lng": "1000000.17403",
