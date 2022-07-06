@@ -1,12 +1,5 @@
-from http import client
-from urllib import response
-from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from main import app
-import pytest
-import asyncio
-
-
 
 
 async def test_read_root():

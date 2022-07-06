@@ -1,51 +1,41 @@
 from dotenv import load_dotenv
 import os
 from fastapi import  HTTPException
-
-import logging
+import googlemaps
+import numpy as np
+import random
+import motor.motor_asyncio
+from datetime import datetime
 from time import sleep
+
 load_dotenv()
 apiKey = os.getenv("googleAPIKey")
-DBconnection =  os.getenv("PersonalDBConnection") or os.getenv("MONGODB_URL") 
+DBconnection = os.getenv("PersonalDBConnection") or os.getenv("MONGODB_URL") 
 
-import googlemaps
 gmaps = googlemaps.Client(key = apiKey)
-
-import motor.motor_asyncio
-
 client = motor.motor_asyncio.AsyncIOMotorClient(DBconnection)
 
 database=client.petrol
 collection = database.stations
 prices = database.prices
-from model import User
 
-import random
 def random_price():
     return (random.randrange(190,210,1) + 0.9)
-import numpy as np
 
 def giveDate():
     now = datetime.now()
     return now.strftime("%d/%m/%Y %H:%M:%S")
 
-# range from -90 to 90 for latitude and -180 to 180 for longitude.
-
 async def get_petrol_stations(lat, lng):
     twoPageResult = []
     allTheStationsId = []
     newFromGoogle = []
-    
-
     try :
         type(float(lat)) == float or type(float(lng)) == float 
     except :
         raise HTTPException(status_code=400, detail="Bad Request")
-
     if float(lat) <= -90 or float(lat) >= 90 or float(lng) <= -180 or float(lng) >= 180 :
         raise HTTPException(status_code=404, detail="Not found")
-
-
     result = gmaps.places( location=(f"{lat}, {lng}"), radius=2, type="gas_station")
     twoPageResult.append(result["results"])
     sleep(2)
@@ -57,7 +47,6 @@ async def get_petrol_stations(lat, lng):
         newFromGoogle.append({ "name" : flattenList[i]["name"], "station_id" : flattenList[i]["place_id"], "address" : flattenList[i]["formatted_address"], "coordinates" : {"lat" : flattenList[i]["geometry"]["location"]["lat"], "lng" : flattenList[i]["geometry"]["location"]["lng"]}, "price" : [{"price": random_price(), "time_submitted": giveDate(),"user":"default"}], "votes" : 0 })
         allTheStationsId.append(flattenList[i]["place_id"])
         i += 1
-
     j= 0
     while j < len(newFromGoogle):
         document = await collection.find_one({"station_id" : newFromGoogle[j]["station_id"]})
@@ -70,22 +59,14 @@ async def get_petrol_stations(lat, lng):
         document = await collection.find_one({"station_id" : allTheStationsId[d]})
         stationsFromDataBase.append(document)
         d +=1
- 
     for i in range(len(stationsFromDataBase)):
         del stationsFromDataBase[i]["_id"]
     return(stationsFromDataBase)
-
-
-
-##########################
-
-from datetime import datetime
 
 async def change_price(price):
     station_id = price.station_id
     petrol_price = price.price
     user = price.user
-    # logging.warning()
     if petrol_price <= 180 or petrol_price >= 250:
         raise HTTPException(status_code=400, detail="Bad Request")
     checkForExitstsStation = await collection.find_one({"station_id" : station_id})
