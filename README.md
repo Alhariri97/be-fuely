@@ -8,19 +8,29 @@ Hello and welcome to the Fuely app backend code.. This bakkend framework uses py
 
 4. Ensure that you have python 3.10 or above with pip 22.1.2
 
-5. install venv: sudo apt-get -y install virtualenv
+5. install venv: 
 
-6. cd to be-fuely via the terminal. Make the virtual environment with the following command: python3 -m venv petrol
+```sudo apt-get -y install virtualenv```
 
-7. Activate the virtual envronment: source petrol/bin/activate
+6. cd to be-fuely via the terminal. Make the virtual environment with the following command: 
 
-8. Install the required dependencies: pip install -r requirements.txt
+```python3 -m venv petrol```
 
-9. Create a local databse on mongo
+7. Activate the virtual envronment: 
+
+```source petrol/bin/activate```
+
+8. Install the required dependencies: 
+
+```pip install -r requirements.txt```
+
+9. Create a local database on mongo
 
 10. In the projects root, make a .env file that contains the following code: 
 
-```googleAPIKey=<yourapiykeyhere>
-PersonalDBConnection= mongodb+srv://<mongousernamehere>:<mongodbpasswordhere>@cluster0.lek7zey.mongodb.net/?retryWrites=true&w=majority```
+```googleAPIKey=<yourapiykeyhere>```
+```PersonalDBConnection= mongodb+srv://<mongousernamehere>:<mongodbpasswordhere>@cluster0.lek7zey.mongodb.net/?retryWrites=true&w=majority```
 
-11. You can now run tests on the backend with the following command: pytest -n auto
+11. You can now run tests on the backend with the following command: 
+
+```pytest -n auto```
