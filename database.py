@@ -41,23 +41,17 @@ async def get_petrol_stations(lat, lng):
         raise HTTPException(status_code=404, detail="Not found")
     result = gmaps.places(
         location=(f"{lat}, {lng}"), radius=2, type="gas_station")
-    twoPageResult.append(result["results"])
-    sleep(2)
-    nextPage = gmaps.places(location=(
-        f"{lat}, {lng}"), radius=2, type="gas_station", page_token=result["next_page_token"])
-    twoPageResult.append(nextPage["results"])
-    flattenList = list(np.concatenate(twoPageResult).flat)
     i = 0
-    while i < len(flattenList):
-        newFromGoogle.append({"name": flattenList[i]["name"], "station_id": flattenList[i]["place_id"], "address": flattenList[i]["formatted_address"], "coordinates": {
-                             "lat": flattenList[i]["geometry"]["location"]["lat"], "lng": flattenList[i]["geometry"]["location"]["lng"]}, "price": [{"price": random_price(), "time_submitted": giveDate(), "user": "default"}], "votes": 0})
-        allTheStationsId.append(flattenList[i]["place_id"])
+    while i < len(result["results"]):
+        newFromGoogle.append({"name": result["results"][i]["name"], "station_id": result["results"][i]["place_id"], "address": result["results"][i]["formatted_address"], "coordinates": {
+                             "lat": result["results"][i]["geometry"]["location"]["lat"], "lng": result["results"][i]["geometry"]["location"]["lng"]}, "price": [{"price": random_price(), "time_submitted": giveDate(), "user": "default"}], "votes": 0})
+        allTheStationsId.append(result["results"][i]["place_id"])
         i += 1
     j = 0
     while j < len(newFromGoogle):
         document = await collection.find_one({"station_id": newFromGoogle[j]["station_id"]})
         if document == None:
-            newStationToDataBase = await collection.insert_one(newFromGoogle[j])
+            await collection.insert_one(newFromGoogle[j])
         j += 1
     d = 0
     stationsFromDataBase = []
