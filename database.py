@@ -30,7 +30,6 @@ def giveDate():
 
 
 async def get_petrol_stations(lat, lng):
-    twoPageResult = []
     allTheStationsId = []
     newFromGoogle = []
     try:
