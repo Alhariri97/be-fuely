@@ -1,3 +1,4 @@
+Hi welcom.
 Hello and welcome to the Fuely app backend code.. This bakkend framework uses python fastapi and mongo database Here is a guide to installing and running the backend:
 
 1. Clone this repo into your preferred location
